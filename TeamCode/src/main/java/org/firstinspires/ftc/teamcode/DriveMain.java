@@ -40,8 +40,8 @@ public class DriveMain extends OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
         leftRear.setDirection(DcMotor.Direction.FORWARD);
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        rightRear.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
 
 
         // Tell the driver that initialization is complete.
@@ -69,22 +69,22 @@ public class DriveMain extends OpMode
      */
     @Override
     public void loop() {
-        double theta = Math.atan2(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        double theta = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x);
         double magnitude = Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2));
-        double turn = Range.clip(Math.sqrt(Math.pow(gamepad1.right_stick_x, 2) + Math.pow(gamepad1.right_stick_y, 2)), -1, 1);
-        double rf = Math.sin(theta - (Math.PI/4)) * magnitude;
-        double lf = -Math.sin(theta - (Math.PI/4)) * magnitude;
-        double rb = -Math.sin(theta + (Math.PI/4)) * magnitude;
+        double turn = -Range.clip(gamepad1.right_stick_x, -1, 1);
+        double rf = Math.sin(theta + (Math.PI/4)) * magnitude;
+        double lf = Math.sin(theta - (Math.PI/4)) * magnitude;
+        double rb = Math.sin(theta - (Math.PI/4)) * magnitude;
         double lb = Math.sin(theta + (Math.PI/4)) * magnitude;
         leftRear.setPower(lb + turn);
-        rightRear.setPower(rb + turn);
+        rightRear.setPower(rb - turn);
         leftFront.setPower(lf + turn);
-        rightFront.setPower(rf + turn);
-        ElementArm elementArm = new ElementArm(hardwareMap);
-        Hang hang = new Hang(hardwareMap);
+        rightFront.setPower(rf - turn);
+        //ElementArm elementArm = new ElementArm(hardwareMap);
+       Hang hang = new Hang(hardwareMap);
 
 
-
+/*
         if(gamepad2.dpad_up){
             //hand rotation up for over the crater
             elementArm.rotateUp();
@@ -117,20 +117,18 @@ public class DriveMain extends OpMode
         else{
             elementArm.stopExtend();
         }
-
-        if(gamepad2.right_bumper){
+        */
+        if(gamepad1.right_bumper){
             //winch up for hang
             hang.hangUp();
         }
-        else if(gamepad2.left_bumper){
+        else if(gamepad1.left_bumper){
             //hang down
             hang.hangDown();
         }
         else{
             hang.stopHang();
         }
-
-
 
 
     }
@@ -147,4 +145,3 @@ public class DriveMain extends OpMode
     }
 
 }
-
