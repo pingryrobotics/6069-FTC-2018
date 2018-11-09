@@ -140,8 +140,9 @@ public class DriveMain extends OpMode
     public void stop() {
         leftRear.setPower(0);
         rightRear.setPower(0);
-        leftFront.setPower(0);
+        leftFront.setPower(0); 
         rightFront.setPower(0);
     }
 
 }
+ 
