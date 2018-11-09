@@ -69,66 +69,66 @@ public class DriveMain extends OpMode
      */
     @Override
     public void loop() {
-        double theta = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x);
+        double theta = Math.atan2(-gamepad1.left_stick_y, -gamepad1.left_stick_x);
         double magnitude = Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2));
         double turn = -Range.clip(gamepad1.right_stick_x, -1, 1);
         double rf = Math.sin(theta + (Math.PI/4)) * magnitude;
         double lf = Math.sin(theta - (Math.PI/4)) * magnitude;
         double rb = Math.sin(theta - (Math.PI/4)) * magnitude;
         double lb = Math.sin(theta + (Math.PI/4)) * magnitude;
-        leftRear.setPower(lb + turn);
-        rightRear.setPower(rb - turn);
-        leftFront.setPower(lf + turn);
-        rightFront.setPower(rf - turn);
+
         //ElementArm elementArm = new ElementArm(hardwareMap);
        Hang hang = new Hang(hardwareMap);
+       ElementArm elementArm = new ElementArm(hardwareMap);
 
+       if(gamepad1.dpad_up){
+           leftRear.setPower(0.3);
+           rightRear.setPower(0.3);
+           leftFront.setPower(0.3);
+           rightFront.setPower(0.3);
+       }else if(gamepad1.dpad_down){
+           leftRear.setPower(-0.3);
+           rightRear.setPower(-0.3);
+           leftFront.setPower(-0.3);
+           rightFront.setPower(-0.3);
+       } else{
+           leftRear.setPower(lb + turn);
+           rightRear.setPower(rb - turn);
+           leftFront.setPower(lf + turn);
+           rightFront.setPower(rf - turn);
+       }
 
-/*
-        if(gamepad2.dpad_up){
-            //hand rotation up for over the crater
-            elementArm.rotateUp();
-        }
-        else if(gamepad2.dpad_down){
-            //flip down intake
-            elementArm.rotateDown();
-        }
-
-        if(gamepad2.right_trigger > 0.3){
-            // intake spin
-            elementArm.intake();
-        }
-        if(gamepad2.left_trigger > 0.3){
-            //outtake
-            elementArm.outtake();
-        }
-        else{
-            elementArm.stopSpin();
-        }
-
-        if(gamepad2.right_stick_y > 0){
-            //extend
-            elementArm.extend(0.75);
-        }
-        else if(gamepad2.right_stick_y < 0){
-            //retract in
-            elementArm.retract(-.75);
-        }
-        else{
-            elementArm.stopExtend();
-        }
-        */
         if(gamepad1.right_bumper){
-            //winch up for hang
-            hang.hangUp();
+            //winch down for hang
+            hang.hangDown();
         }
         else if(gamepad1.left_bumper){
-            //hang down
-            hang.hangDown();
+            //hang up
+            hang.hangUp();
         }
         else{
             hang.stopHang();
         }
+        if(gamepad1.a)
+            hang.latch();
+        else if(gamepad1.b)
+            hang.unlatch();
+        double motorPower = gamepad2.left_stick_y;
+        if(motorPower != 0){
+            if(motorPower >  0)
+                elementArm.rotateOut(motorPower);
+            else
+                elementArm.rotateBack(motorPower);
+        }
+        if(gamepad2.right_bumper){
+            elementArm.outtake();
+        }
+       /* if(gamepad1.x)
+            elementArm.temporaryUp();
+        if(gamepad1.y)
+            elementArm.temporaryDown();
+*/
+
 
 
     }
